@@ -37,7 +37,7 @@ scene.add(sunLight);
 
 const floorGeo = new THREE.PlaneGeometry(400, 400);
 const floorMat = new THREE.MeshStandardMaterial({
-    color: 0x8B5A2B,
+    color: 0x6b3b1f,
     roughness: 1,
     metalness: 0.05
 });
@@ -46,38 +46,55 @@ floor.rotation.x = -Math.PI / 2;
 floor.receiveShadow = true;
 scene.add(floor);
 
+const puertaLight = new THREE.SpotLight(0xffe6b3, 22, 20, Math.PI / 6, 0.4, 1.2);
+puertaLight.position.set(5, 6, 2);
+puertaLight.target.position.set(5, 1.5, -4);
+puertaLight.castShadow = true;
+scene.add(puertaLight);
+scene.add(puertaLight.target);
+
 const loader = new GLTFLoader();
 const modelos3D = [];
 
+function prepararModelo(model, targetX, targetZ, scale = 1, rotation = new THREE.Euler()) {
+    model.scale.setScalar(scale);
+    model.rotation.copy(rotation);
+    model.updateMatrixWorld(true);
+
+    const box = new THREE.Box3().setFromObject(model);
+    const center = box.getCenter(new THREE.Vector3());
+    model.position.set(targetX - center.x, -box.min.y, targetZ - center.z);
+
+    const placedBox = new THREE.Box3().setFromObject(model);
+    const placedCenter = placedBox.getCenter(new THREE.Vector3());
+    return { box: placedBox, center: placedCenter };
+}
+
 loader.load('puerta.glb', (gltf) => {
     const model = gltf.scene;
-    model.position.set(5, 0, -5);
-    model.rotation.y = Math.PI / 10;
-    model.rotation.x = -0.05;
-    model.rotation.z = 9.5;
-    model.scale.set(1.1, 1.1, 1.1);
+    const placement = prepararModelo(model, 5, -5, 1.1, new THREE.Euler(-0.05, Math.PI / 10, 9.5));
 
     model.traverse((node) => {
         if (node.isMesh) {
             node.castShadow = true;
             node.receiveShadow = true;
-            node.material = new THREE.MeshStandardMaterial({
-                color: node.material.color || 0x8a847c,
-                roughness: 0.7,
-                metalness: 0.1
-            });
+            if (node.material) {
+                const material = node.material.clone();
+                material.color.set(0x8a5a2a);
+                material.roughness = 0.7;
+                material.metalness = 0.1;
+                node.material = material;
+            }
         }
     });
 
     scene.add(model);
-    modelos3D[0] = { pos: new THREE.Vector3(5, 2, 0), center: new THREE.Vector3(5, 3.5, 0) };
+    modelos3D[0] = { pos: new THREE.Vector3(5, 0, -5), center: placement.center };
 });
 
 loader.load('estatua.glb', (gltf) => {
     const model = gltf.scene;
-    model.position.set(12, 0, 0);
-    model.rotation.y = -Math.PI / 6;
-    model.scale.set(1, 1, 1);
+    const placement = prepararModelo(model, 0, 0, 1, new THREE.Euler(0, -Math.PI / 6, 0));
 
     model.traverse((node) => {
         if (node.isMesh) {
@@ -92,7 +109,7 @@ loader.load('estatua.glb', (gltf) => {
     });
 
     scene.add(model);
-    modelos3D[1] = { pos: new THREE.Vector3(12, 0, 0), center: new THREE.Vector3(12, 2, 0) };
+    modelos3D[1] = { pos: new THREE.Vector3(0, 0, 0), center: placement.center };
 });
 
 const modelInfo = [
