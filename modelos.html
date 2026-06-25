@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos 3D - Museo Virtual Tiwanaku</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a class="logo" href="index.html">TIAHUANACO 3D</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="historia.html">Historia</a></li>
+            <li><a class="active" href="modelos.html">Modelos 3D</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="content-panel">
+            <h2>Colección Interactiva</h2>
+            <p>Selecciona un monumento para enfocar la cámara y explorar su detalle. Después puedes mover la vista con el mouse para observarlo desde distintos ángulos.</p>
+            <div class="models-menu">
+                <button class="btn-action" onclick="window.seleccionarModelo(0)">Puerta del Sol</button>
+                <button class="btn-action" onclick="window.seleccionarModelo(1)">Monolito Ponce</button>
+            </div>
+
+            <div class="models-layout">
+                <div id="webgl-container"></div>
+                <div>
+                    <div class="model-info-card" id="model-info-card">
+                        <h3 id="model-title">Puerta del Sol</h3>
+                        <p id="model-description">Monumento emblemático de Tiwanaku, reconocido por su iconografía solar y su valor ceremonial.</p>
+                        <ul>
+                            <li><strong>Periodo:</strong> <span id="model-period">Tiwanaku clásico</span></li>
+                            <li><strong>Ubicación:</strong> <span id="model-location">Sitio arqueológico de Tiwanaku, Bolivia</span></li>
+                            <li><strong>Importancia:</strong> <span id="model-significance">Símbolo del poder religioso y astronómico de la cultura.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module" src="modelos.js"></script>
+</body>
+</html>
